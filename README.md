@@ -21,23 +21,6 @@ Supported arches are:
 | `CHECKSUM` | checksum for the github runner version | valid checksum |
 ```
 
-## Setup
-
-On the machines running the github the following are required:
-
-- docker (`zypper in -y docker`)
-- a time sync daemon
-
-## Summary
-
-For example, the following steps works for openSUSE:
-
-```bash
-$ zypper in -y docker
-$ systemctl enable --now docker
-$ systemctl enable --now systemd-timesyncd
-```
-
 ## Run with docker
 
 To run the action runner with docker, for example it is necessary just to specify all the settings with environment variables (and share the docker socket):
