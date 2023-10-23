@@ -5,6 +5,7 @@ CHECKSUM=${CHECKSUM:-2974243bab2a282349ac833475d241d5273605d3628f0685bd07fb5530f
 ORG=${ORG:-}
 REPO=${REPO:-}
 OS=${OS:-linux}
+LABELS="${LABELS:-${ARCH},${OS},self-hosted}"
 
 if [ -z "${ORG}" ]; then
     echo "WARN: missing ORG"
@@ -29,7 +30,7 @@ tar xzf ./${FILE}
 # Make sure that if /var/run is mounted it has the correct permissions for the runner user
 chgrp docker /var/run/docker.sock
 
-su runner -c "./config.sh --unattended --url https://github.com/${ORG}/${REPO} --token ${TOKEN} --name docker-runner-$(hostname) --labels ${ARCH},${OS},self-hosted"
+su runner -c "./config.sh --unattended --url https://github.com/${ORG}/${REPO} --token ${TOKEN} --name docker-runner-$(hostname) --labels ${LABELS}"
 while true; do
     su runner -c "./run.sh"
 done
