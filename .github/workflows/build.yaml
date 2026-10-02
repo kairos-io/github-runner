@@ -23,7 +23,18 @@ jobs:
         version: latest
 
     - name: Login to Quay Registry
-      run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
+      env:
+        QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+        QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      run: |
+        missing=""
+        [ -n "${QUAY_USERNAME}" ] || missing="QUAY_USERNAME"
+        [ -n "${QUAY_PASSWORD}" ] || missing="${missing:+${missing} and }QUAY_PASSWORD"
+        if [ -n "${missing}" ]; then
+          echo "::error::${DOCKER_REGISTRY}/${DOCKER_IMAGE} cannot be pushed: no value for ${missing} in this repository. The quay secrets are not scoped to kairos-io/github-runner. See kairos-io/kairos#5128."
+          exit 1
+        fi
+        printf %s "${QUAY_PASSWORD}" | docker login -u "${QUAY_USERNAME}" --password-stdin "${DOCKER_REGISTRY}"
 
     - name: Run Buildx
       run: |
